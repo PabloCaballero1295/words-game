@@ -1,0 +1,8 @@
+.keyboard_wrapper {
+  margin-top: 1em;
+}
+
+.keyboard_row {
+  display: flex;
+  justify-content: center;
+}

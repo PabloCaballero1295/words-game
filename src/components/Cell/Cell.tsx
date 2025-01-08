@@ -7,7 +7,7 @@ interface CellProps {
 
 export const Cell = ({ letter }: CellProps) => {
   const [value, setValue] = useState(letter)
-  const [cellState, setCellState] = useState(" ")
+
   return (
     <div className={styles.cell}>
       <div className={styles.cell_value}>{value}</div>

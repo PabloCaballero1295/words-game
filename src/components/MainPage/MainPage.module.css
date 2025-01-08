@@ -1,3 +1,9 @@
+.title {
+  font-size: 1.5em;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
 .wrapper {
   margin: auto;
   width: fit-content;
@@ -6,6 +12,8 @@
 .words_grid {
   display: flex;
   flex-direction: column;
+  width: fit-content;
+  margin: auto;
 }
 
 .words_row {
