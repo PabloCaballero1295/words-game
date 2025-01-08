@@ -1,0 +1,16 @@
+.cell {
+  display: flex;
+  width: 3em;
+  height: 3em;
+  background-color: rgb(80, 80, 80);
+  margin: 0.15em;
+  border-radius: 0.5em;
+}
+
+.cell_value {
+  font-size: 1.5em;
+  margin: auto;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+}

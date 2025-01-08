@@ -1,0 +1,13 @@
+.wrapper {
+  margin: auto;
+  width: fit-content;
+}
+
+.words_grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.words_row {
+  display: flex;
+}
