@@ -14,3 +14,15 @@
   text-align: center;
   text-transform: uppercase;
 }
+
+.incorrect {
+  background-color: red !important;
+}
+
+.correct {
+  background-color: green !important;
+}
+
+.included {
+  background-color: orange !important;
+}
