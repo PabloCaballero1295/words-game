@@ -2,6 +2,8 @@ import styles from "./KeyboardButton.module.css"
 
 interface KeyboardButtonProps {
   value: string
+  correct: boolean
+  possible: boolean
   enabled: boolean
   handleKeyboardButton: (value: string) => void
 }
@@ -9,6 +11,8 @@ interface KeyboardButtonProps {
 export const KeyboardButton = ({
   value,
   enabled,
+  correct,
+  possible,
   handleKeyboardButton,
 }: KeyboardButtonProps) => {
   const getStyle = () => {
@@ -16,6 +20,10 @@ export const KeyboardButton = ({
 
     if (!enabled) {
       style += ` ${styles.disabled_button}`
+    } else if (correct) {
+      style += ` ${styles.correct_button}`
+    } else if (possible) {
+      style += ` ${styles.possible_button}`
     }
 
     return style

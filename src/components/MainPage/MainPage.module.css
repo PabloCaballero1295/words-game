@@ -5,8 +5,12 @@
 }
 
 .wrapper {
+  width: 100%;
+  max-width: 30em;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   margin: auto;
-  width: fit-content;
 }
 
 .words_grid {
@@ -18,4 +22,22 @@
 
 .words_row {
   display: flex;
+}
+
+.new_game_button {
+  background-color: rgb(80, 80, 80);
+  border: none;
+  cursor: pointer;
+  border-radius: 0.5em;
+  padding: 1em 2em;
+}
+
+.game_options {
+  display: flex;
+  justify-content: center;
+}
+
+.keyboard_wrapper {
+  margin-top: auto;
+  margin-bottom: 2em;
 }

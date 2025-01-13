@@ -4,6 +4,7 @@ import { getFiveLetterWord } from "../../utils/words"
 import styles from "./MainPage.module.css"
 import { Keyboard } from "../Keyboard/Keyboard"
 import { useState } from "react"
+import { GameMessage } from "../GameMessage/GameMessage"
 
 type CellState = {
   value: string
@@ -24,6 +25,8 @@ const createGrid = (n_rows: number, word_size: number) => {
 export const MainPage = () => {
   const [solution, setSolution] = useState(getFiveLetterWord())
   const [wrongChar, setWrongChar] = useState<string[]>([])
+  const [correctChar, setCorrectChar] = useState<string[]>([])
+  const [possibleChar, setPossibleChar] = useState<string[]>([])
   const [gameOver, setGameOver] = useState(false)
   const [win, setWin] = useState(false)
 
@@ -42,6 +45,8 @@ export const MainPage = () => {
     setActiveColumn(0)
     setActiveRow(0)
     setWrongChar([])
+    setCorrectChar([])
+    setPossibleChar([])
     setWin(false)
     setGameOver(false)
   }
@@ -90,7 +95,7 @@ export const MainPage = () => {
       if (gameOver || win) {
         return
       }
-      console.log("CHECKING")
+
       let word = ""
 
       const _tries = [...tries]
@@ -105,12 +110,22 @@ export const MainPage = () => {
             solution[i].toUpperCase()
           ) {
             _tries[activeRow][i].status = "correct"
+            setCorrectChar((prev) =>
+              !prev.includes(_tries[activeRow][i].value)
+                ? [...prev, _tries[activeRow][i].value]
+                : [...prev]
+            )
           } else if (
             solution
               .toUpperCase()
               .includes(_tries[activeRow][i].value.toUpperCase())
           ) {
             _tries[activeRow][i].status = "included"
+            setPossibleChar((prev) =>
+              !prev.includes(_tries[activeRow][i].value)
+                ? [...prev, _tries[activeRow][i].value]
+                : [...prev]
+            )
           } else {
             _tries[activeRow][i].status = "incorrect"
             setWrongChar((prev) =>
@@ -149,13 +164,23 @@ export const MainPage = () => {
           </div>
         ))}
       </div>
-      {win ? <div>VICTORIA</div> : null}
-      {!win && gameOver ? <div>DERROTA</div> : null}
-      {win || gameOver ? <button onClick={newGame}>New Game</button> : null}
-      <Keyboard
-        handleKeyboardButton={handleKeyboardButton}
-        wrongChar={wrongChar}
-      />
+
+      {(win || gameOver) && <GameMessage victory={win} solution={solution} />}
+      {(win || gameOver) && (
+        <div className={styles.game_options}>
+          <button className={styles.new_game_button} onClick={newGame}>
+            Nuevo juego
+          </button>
+        </div>
+      )}
+      <div className={styles.keyboard_wrapper}>
+        <Keyboard
+          handleKeyboardButton={handleKeyboardButton}
+          correctChar={correctChar}
+          wrongChar={wrongChar}
+          possibleChar={possibleChar}
+        />
+      </div>
     </div>
   )
 }
