@@ -10,6 +10,11 @@
   cursor: pointer;
 }
 
+.disabled_button {
+  background-color: red !important;
+  cursor: auto;
+}
+
 .button_value {
   font-size: 1.25em;
   text-transform: uppercase;

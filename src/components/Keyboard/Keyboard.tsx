@@ -6,15 +6,20 @@ const row_2 = ["a", "s", "d", "f", "g", "h", "j", "k", "l", "ñ"]
 const row_3 = ["check", "z", "x", "c", "v", "b", "n", "m", "del"]
 
 interface KeyboardProps {
+  wrongChar: string[]
   handleKeyboardButton: (value: string) => void
 }
 
-export const Keyboard = ({ handleKeyboardButton }: KeyboardProps) => {
+export const Keyboard = ({
+  wrongChar,
+  handleKeyboardButton,
+}: KeyboardProps) => {
   return (
     <div className={styles.keyboard_wrapper}>
       <div className={styles.keyboard_row}>
         {row_1.map((letter, i) => (
           <KeyboardButton
+            enabled={!wrongChar.includes(letter) ? true : false}
             handleKeyboardButton={handleKeyboardButton}
             key={i}
             value={letter}
@@ -24,6 +29,7 @@ export const Keyboard = ({ handleKeyboardButton }: KeyboardProps) => {
       <div className={styles.keyboard_row}>
         {row_2.map((letter, i) => (
           <KeyboardButton
+            enabled={!wrongChar.includes(letter) ? true : false}
             handleKeyboardButton={handleKeyboardButton}
             key={i}
             value={letter}
@@ -33,6 +39,7 @@ export const Keyboard = ({ handleKeyboardButton }: KeyboardProps) => {
       <div className={styles.keyboard_row}>
         {row_3.map((letter, i) => (
           <KeyboardButton
+            enabled={!wrongChar.includes(letter) ? true : false}
             handleKeyboardButton={handleKeyboardButton}
             key={i}
             value={letter}

@@ -1,10 +1,9 @@
 import { Cell } from "../Cell/Cell"
+import { getFiveLetterWord } from "../../utils/words"
 
 import styles from "./MainPage.module.css"
 import { Keyboard } from "../Keyboard/Keyboard"
 import { useState } from "react"
-
-//const base_grid = ["     ", "     ", "     ", "     ", "     ", "     "]
 
 type CellState = {
   value: string
@@ -22,9 +21,12 @@ const createGrid = (n_rows: number, word_size: number) => {
   return grid
 }
 
-const solution = "ROYAL"
-
 export const MainPage = () => {
+  const [solution, setSolution] = useState(getFiveLetterWord())
+  const [wrongChar, setWrongChar] = useState<string[]>([])
+  const [gameOver, setGameOver] = useState(false)
+  const [win, setWin] = useState(false)
+
   const n_rows = 6
   const word_size = 5
 
@@ -34,7 +36,21 @@ export const MainPage = () => {
   const [activeRow, setActiveRow] = useState(0)
   const [activeColumn, setActiveColumn] = useState(0)
 
+  const newGame = () => {
+    setSolution(getFiveLetterWord())
+    setTries(createGrid(n_rows, word_size))
+    setActiveColumn(0)
+    setActiveRow(0)
+    setWrongChar([])
+    setWin(false)
+    setGameOver(false)
+  }
+
   const addLetter = (value: string) => {
+    if (activeRow >= n_rows || win) {
+      return
+    }
+
     if (activeColumn >= word_size) {
       return
     }
@@ -71,6 +87,9 @@ export const MainPage = () => {
         removeLetter()
       }
     } else if (value == "guess" || value == "check") {
+      if (gameOver || win) {
+        return
+      }
       console.log("CHECKING")
       let word = ""
 
@@ -81,11 +100,6 @@ export const MainPage = () => {
       })
       if (word.length >= word_size) {
         for (let i = 0; i < word_size; i++) {
-          console.log(
-            _tries[activeRow][i].value.toUpperCase(),
-            solution[i].toUpperCase()
-          )
-
           if (
             _tries[activeRow][i].value.toUpperCase() ==
             solution[i].toUpperCase()
@@ -99,6 +113,11 @@ export const MainPage = () => {
             _tries[activeRow][i].status = "included"
           } else {
             _tries[activeRow][i].status = "incorrect"
+            setWrongChar((prev) =>
+              !prev.includes(_tries[activeRow][i].value)
+                ? [...prev, _tries[activeRow][i].value]
+                : [...prev]
+            )
           }
         }
 
@@ -106,6 +125,12 @@ export const MainPage = () => {
 
         setActiveRow(activeRow + 1)
         setActiveColumn(0)
+
+        if (word.toLocaleLowerCase() === solution.toLocaleLowerCase()) {
+          setWin(true)
+        } else if (activeRow >= n_rows - 1) {
+          setGameOver(true)
+        }
       }
     } else {
       addLetter(value)
@@ -114,7 +139,7 @@ export const MainPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.title}>Words game</div>
+      <div className={styles.title}>Adivina la palabra</div>
       <div className={styles.words_grid}>
         {tries.map((item, i) => (
           <div key={i} className={styles.words_row}>
@@ -124,8 +149,13 @@ export const MainPage = () => {
           </div>
         ))}
       </div>
-
-      <Keyboard handleKeyboardButton={handleKeyboardButton} />
+      {win ? <div>VICTORIA</div> : null}
+      {!win && gameOver ? <div>DERROTA</div> : null}
+      {win || gameOver ? <button onClick={newGame}>New Game</button> : null}
+      <Keyboard
+        handleKeyboardButton={handleKeyboardButton}
+        wrongChar={wrongChar}
+      />
     </div>
   )
 }
