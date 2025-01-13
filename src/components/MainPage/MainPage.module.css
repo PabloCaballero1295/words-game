@@ -16,12 +16,15 @@
 .words_grid {
   display: flex;
   flex-direction: column;
-  width: fit-content;
-  margin: auto;
+  width: 100%;
+  height: 50vh;
 }
 
 .words_row {
   display: flex;
+  width: 100%;
+  justify-content: center;
+  height: 16.66%;
 }
 
 .new_game_button {
