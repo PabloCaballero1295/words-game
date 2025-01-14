@@ -1,10 +1,11 @@
 import { Cell } from "../Cell/Cell"
-import { getFiveLetterWord } from "../../utils/words"
+import { getFiveLetterWord, checkWordExists } from "../../utils/words"
 
 import styles from "./MainPage.module.css"
 import { Keyboard } from "../Keyboard/Keyboard"
 import { useState } from "react"
 import { GameMessage } from "../GameMessage/GameMessage"
+import { WordError } from "../WordError/WordError"
 
 type CellState = {
   value: string
@@ -29,6 +30,7 @@ export const MainPage = () => {
   const [possibleChar, setPossibleChar] = useState<string[]>([])
   const [gameOver, setGameOver] = useState(false)
   const [win, setWin] = useState(false)
+  const [error, setError] = useState(false)
 
   const n_rows = 6
   const word_size = 5
@@ -90,6 +92,7 @@ export const MainPage = () => {
     if (value == "delete" || value == "del") {
       if (activeColumn != 0) {
         removeLetter()
+        setError(false)
       }
     } else if (value == "guess" || value == "check") {
       if (gameOver || win) {
@@ -104,6 +107,11 @@ export const MainPage = () => {
         word = word + val.value
       })
       if (word.length >= word_size) {
+        if (!checkWordExists(word)) {
+          setError(true)
+          return
+        }
+
         for (let i = 0; i < word_size; i++) {
           if (
             _tries[activeRow][i].value.toUpperCase() ==
@@ -164,7 +172,7 @@ export const MainPage = () => {
           </div>
         ))}
       </div>
-
+      {error && <WordError />}
       {(win || gameOver) && <GameMessage victory={win} solution={solution} />}
       {(win || gameOver) && (
         <div className={styles.game_options}>

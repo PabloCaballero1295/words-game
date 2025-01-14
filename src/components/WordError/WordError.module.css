@@ -1,0 +1,13 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  text-align: center;
+  border-radius: 1em;
+}
+
+.lose {
+  background-color: red;
+}
