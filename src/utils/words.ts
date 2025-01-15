@@ -86,6 +86,8 @@ const getCharIndex = (char: string) => {
       return 24
     case "z":
       return 25
+    case "ñ":
+      return 26
     default:
       return -1
   }
