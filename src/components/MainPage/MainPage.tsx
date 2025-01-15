@@ -220,6 +220,7 @@ export const MainPage = () => {
                 active={j == activeColumn && activeRow == i ? true : false}
                 letter={letter.value}
                 status={letter.status}
+                position={j}
               />
             ))}
           </div>
@@ -234,7 +235,7 @@ export const MainPage = () => {
           </button>
         </div>
       )}
-      {solution}
+
       <div className={styles.keyboard_wrapper}>
         <Keyboard
           handleKeyboardButton={handleKeyboardButton}

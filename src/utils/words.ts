@@ -18,7 +18,6 @@ export type CharCount = {
 }
 
 export const countCharacter = (word: string) => {
-  console.log(word)
   const count: CharCount[] = []
 
   for (const char of word) {
@@ -29,8 +28,6 @@ export const countCharacter = (word: string) => {
       count[index].count++
     }
   }
-
-  console.log(count)
 
   return count
 }

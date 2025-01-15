@@ -5,22 +5,27 @@ interface CellProps {
   letter: string
   status: string
   active: boolean
+  position: number
 }
 
-export const Cell = ({ letter, status, active }: CellProps) => {
+export const Cell = ({ letter, status, active, position }: CellProps) => {
   const [value, setValue] = useState(letter)
+  const [flipped, setFlipped] = useState(false)
 
   useEffect(() => {
     setValue(letter)
   }, [letter])
 
-  const getStyle = () => {
-    let cell_style = styles.cell
-
-    if (active) {
-      cell_style += ` ${styles.active}`
+  useEffect(() => {
+    if (status != "") {
+      setTimeout(() => {
+        setFlipped(true)
+      }, position * 50)
     }
+  }, [status, position])
 
+  const getColor = () => {
+    let cell_style = ""
     if (status == "incorrect") {
       cell_style += ` ${styles.incorrect}`
     } else if (status == "correct") {
@@ -33,8 +38,19 @@ export const Cell = ({ letter, status, active }: CellProps) => {
   }
 
   return (
-    <div className={getStyle()}>
-      <div className={styles.cell_value}>{value}</div>
+    <div className={styles.cell_container}>
+      <div
+        className={`${styles.cell} ${
+          flipped ? styles.flipped : active ? styles.active : ""
+        }`}
+      >
+        <div className={styles.cell_front}>
+          <div className={styles.cell_value}>{value}</div>
+        </div>
+        <div className={`${styles.cell_back} ${getColor()}`}>
+          <div className={styles.cell_value}>{value}</div>
+        </div>
+      </div>
     </div>
   )
 }
