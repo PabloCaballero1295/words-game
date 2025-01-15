@@ -21,6 +21,8 @@ export const Cell = ({ letter, status, active, position }: CellProps) => {
       setTimeout(() => {
         setFlipped(true)
       }, position * 50)
+    } else {
+      setFlipped(false)
     }
   }, [status, position])
 

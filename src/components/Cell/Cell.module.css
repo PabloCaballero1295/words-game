@@ -19,7 +19,7 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.6s;
+  transition: transform 0s; /* set to 0 to avoid flip on game reset */
 }
 
 .cell_value {
@@ -29,6 +29,7 @@
 
 .cell.flipped {
   transform: rotateY(180deg);
+  transition: transform 0.6s;
 }
 
 .cell_front,
