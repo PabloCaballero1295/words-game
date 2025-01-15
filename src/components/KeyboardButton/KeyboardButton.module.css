@@ -10,9 +10,8 @@
   cursor: pointer;
 }
 
-.disabled_button {
+.wrong_button {
   background-color: red !important;
-  cursor: auto;
 }
 
 .correct_button {

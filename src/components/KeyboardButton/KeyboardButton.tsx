@@ -4,13 +4,13 @@ interface KeyboardButtonProps {
   value: string
   correct: boolean
   possible: boolean
-  enabled: boolean
+  wrong: boolean
   handleKeyboardButton: (value: string) => void
 }
 
 export const KeyboardButton = ({
   value,
-  enabled,
+  wrong,
   correct,
   possible,
   handleKeyboardButton,
@@ -18,8 +18,8 @@ export const KeyboardButton = ({
   const getStyle = () => {
     let style = styles.wrapper
 
-    if (!enabled) {
-      style += ` ${styles.disabled_button}`
+    if (wrong) {
+      style += ` ${styles.wrong_button}`
     } else if (correct) {
       style += ` ${styles.correct_button}`
     } else if (possible) {
@@ -32,7 +32,7 @@ export const KeyboardButton = ({
   return (
     <div
       className={getStyle()}
-      onClick={() => (enabled ? handleKeyboardButton(value) : null)}
+      onClick={() => handleKeyboardButton(value.toLocaleLowerCase())}
     >
       <div className={styles.button_value}>{value}</div>
     </div>

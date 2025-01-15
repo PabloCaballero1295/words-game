@@ -24,7 +24,7 @@ export const Keyboard = ({
         {row_1.map((letter, i) => (
           <KeyboardButton
             correct={correctChar.includes(letter) ? true : false}
-            enabled={!wrongChar.includes(letter) ? true : false}
+            wrong={wrongChar.includes(letter) ? true : false}
             possible={possibleChar.includes(letter) ? true : false}
             handleKeyboardButton={handleKeyboardButton}
             key={i}
@@ -36,7 +36,7 @@ export const Keyboard = ({
         {row_2.map((letter, i) => (
           <KeyboardButton
             correct={correctChar.includes(letter) ? true : false}
-            enabled={!wrongChar.includes(letter) ? true : false}
+            wrong={wrongChar.includes(letter) ? true : false}
             possible={possibleChar.includes(letter) ? true : false}
             handleKeyboardButton={handleKeyboardButton}
             key={i}
@@ -48,7 +48,7 @@ export const Keyboard = ({
         {row_3.map((letter, i) => (
           <KeyboardButton
             correct={correctChar.includes(letter) ? true : false}
-            enabled={!wrongChar.includes(letter) ? true : false}
+            wrong={wrongChar.includes(letter) ? true : false}
             possible={possibleChar.includes(letter) ? true : false}
             handleKeyboardButton={handleKeyboardButton}
             key={i}

@@ -4,9 +4,10 @@ import styles from "./Cell.module.css"
 interface CellProps {
   letter: string
   status: string
+  active: boolean
 }
 
-export const Cell = ({ letter, status }: CellProps) => {
+export const Cell = ({ letter, status, active }: CellProps) => {
   const [value, setValue] = useState(letter)
 
   useEffect(() => {
@@ -15,6 +16,10 @@ export const Cell = ({ letter, status }: CellProps) => {
 
   const getStyle = () => {
     let cell_style = styles.cell
+
+    if (active) {
+      cell_style += ` ${styles.active}`
+    }
 
     if (status == "incorrect") {
       cell_style += ` ${styles.incorrect}`

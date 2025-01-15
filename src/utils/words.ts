@@ -9,7 +9,30 @@ function getRandomInt(max: number) {
 export const getFiveLetterWord = () => {
   const index = getRandomInt(WORDS_FIVE_LENGTH.length)
 
-  return WORDS_FIVE_LENGTH[index]
+  return WORDS_FIVE_LENGTH[index].toLocaleLowerCase()
+}
+
+export type CharCount = {
+  letter: string
+  count: number
+}
+
+export const countCharacter = (word: string) => {
+  console.log(word)
+  const count: CharCount[] = []
+
+  for (const char of word) {
+    const index = count.findIndex((x) => x.letter == char)
+    if (index === -1) {
+      count.push({ letter: char, count: 1 })
+    } else {
+      count[index].count++
+    }
+  }
+
+  console.log(count)
+
+  return count
 }
 
 const getCharIndex = (char: string) => {
