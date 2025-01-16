@@ -58,6 +58,7 @@ export const MainPage = () => {
     setGameOver(false)
   }
 
+  // Function to update the chracter counter
   const updateCharacterCounter = (word: CharCount[], char: string) => {
     const aux = word
     const index = aux.findIndex((x) => x.letter == char)
@@ -67,6 +68,7 @@ export const MainPage = () => {
     return aux
   }
 
+  // Function to check how many times an specefic character can be used in the word
   const getCharCount = (word: CharCount[], char: string) => {
     const index = word.findIndex((x) => x.letter == char)
     if (index != -1) {
@@ -76,7 +78,120 @@ export const MainPage = () => {
     }
   }
 
-  const addLetter = (value: string) => {
+  // Removes the last character of the word
+  const removeLetter = () => {
+    setTries((prevMatrix) => {
+      const updatedMatrix = [...prevMatrix]
+      const updatedRow = [...updatedMatrix[activeRow]]
+      updatedRow[activeColumn - 1].value = ""
+      updatedMatrix[activeRow] = updatedRow
+      return updatedMatrix
+    })
+    setActiveColumn(activeColumn - 1)
+
+    if (activeColumn <= 0) {
+      setActiveColumn(0)
+    }
+  }
+
+  // Function to handle backspace button
+  const handleBackspace = () => {
+    if (activeColumn != 0) {
+      removeLetter()
+      setError(false)
+    }
+  }
+
+  // Function to Check the word
+  const handleCheckWordButton = () => {
+    if (gameOver || win) {
+      return
+    }
+
+    let word = ""
+
+    const _tries = [...tries]
+
+    _tries[activeRow].map((val) => {
+      word = word + val.value
+    })
+    if (word.length >= word_size) {
+      //If word dont exist on the list, display an error message
+      if (!checkWordExists(word)) {
+        setError(true)
+        return
+      }
+
+      // In this variable is the data of the counter of each character
+      let wordCounter = countCharacter(solution)
+
+      /* Loop to check correct characters*/
+
+      for (let i = 0; i < word_size; i++) {
+        if (_tries[activeRow][i].value == solution[i]) {
+          _tries[activeRow][i].status = "correct"
+          setCorrectChar((prev) =>
+            !prev.includes(_tries[activeRow][i].value)
+              ? [...prev, _tries[activeRow][i].value]
+              : [...prev]
+          )
+          wordCounter = updateCharacterCounter(
+            wordCounter,
+            _tries[activeRow][i].value
+          )
+        }
+      }
+
+      /* Loop to search included characters that are not in the correct position */
+      for (let i = 0; i < word_size; i++) {
+        if (solution.includes(_tries[activeRow][i].value)) {
+          //Check the number of times the letter is in the word
+
+          if (
+            _tries[activeRow][i].status != "correct" &&
+            getCharCount(wordCounter, _tries[activeRow][i].value) > 0
+          ) {
+            _tries[activeRow][i].status = "included"
+
+            setPossibleChar((prev) =>
+              !prev.includes(_tries[activeRow][i].value)
+                ? [...prev, _tries[activeRow][i].value]
+                : [...prev]
+            )
+            updateCharacterCounter(wordCounter, _tries[activeRow][i].value)
+          } else if (_tries[activeRow][i].value != solution[i]) {
+            _tries[activeRow][i].status = "incorrect"
+          }
+        }
+      }
+
+      /* Loop to search wrong characters */
+
+      for (let i = 0; i < word_size; i++) {
+        if (!solution.includes(_tries[activeRow][i].value)) {
+          _tries[activeRow][i].status = "incorrect"
+          setWrongChar((prev) =>
+            !prev.includes(_tries[activeRow][i].value)
+              ? [...prev, _tries[activeRow][i].value]
+              : [...prev]
+          )
+        }
+      }
+
+      setTries(_tries)
+      setActiveRow(activeRow + 1)
+      setActiveColumn(0)
+
+      if (word === solution) {
+        setWin(true)
+      } else if (activeRow >= n_rows - 1) {
+        setGameOver(true)
+      }
+    }
+  }
+
+  // Function to handle letters pressed on keyboard
+  const handleKeyboardButton = (value: string) => {
     if (activeRow >= n_rows || win) {
       return
     }
@@ -93,118 +208,6 @@ export const MainPage = () => {
     })
     if (activeColumn < word_size) {
       setActiveColumn(activeColumn + 1)
-    }
-  }
-
-  const removeLetter = () => {
-    setTries((prevMatrix) => {
-      const updatedMatrix = [...prevMatrix]
-      const updatedRow = [...updatedMatrix[activeRow]]
-      updatedRow[activeColumn - 1].value = ""
-      updatedMatrix[activeRow] = updatedRow
-      return updatedMatrix
-    })
-    setActiveColumn(activeColumn - 1)
-
-    if (activeColumn <= 0) {
-      setActiveColumn(0)
-    }
-  }
-
-  const handleKeyboardButton = (value: string) => {
-    if (value == "delete" || value == "del") {
-      if (activeColumn != 0) {
-        removeLetter()
-        setError(false)
-      }
-    } else if (value == "guess" || value == "check") {
-      if (gameOver || win) {
-        return
-      }
-
-      let word = ""
-
-      const _tries = [...tries]
-
-      _tries[activeRow].map((val) => {
-        word = word + val.value
-      })
-      if (word.length >= word_size) {
-        //If word dont exist on the list, display an error message
-        if (!checkWordExists(word)) {
-          setError(true)
-          return
-        }
-
-        // In this variable is the data of the counter of each character
-        let wordCounter = countCharacter(solution)
-
-        /* Loop to check correct characters*/
-
-        for (let i = 0; i < word_size; i++) {
-          if (_tries[activeRow][i].value == solution[i]) {
-            _tries[activeRow][i].status = "correct"
-            setCorrectChar((prev) =>
-              !prev.includes(_tries[activeRow][i].value)
-                ? [...prev, _tries[activeRow][i].value]
-                : [...prev]
-            )
-            wordCounter = updateCharacterCounter(
-              wordCounter,
-              _tries[activeRow][i].value
-            )
-          }
-        }
-
-        /* Loop to search included characters that are not in the correct position */
-        for (let i = 0; i < word_size; i++) {
-          if (solution.includes(_tries[activeRow][i].value)) {
-            //Check the number of times the letter is in the word
-
-            if (
-              _tries[activeRow][i].status != "correct" &&
-              getCharCount(wordCounter, _tries[activeRow][i].value) > 0
-            ) {
-              _tries[activeRow][i].status = "included"
-
-              setPossibleChar((prev) =>
-                !prev.includes(_tries[activeRow][i].value)
-                  ? [...prev, _tries[activeRow][i].value]
-                  : [...prev]
-              )
-              updateCharacterCounter(wordCounter, _tries[activeRow][i].value)
-            } else if (_tries[activeRow][i].value != solution[i]) {
-              _tries[activeRow][i].status = "incorrect"
-            }
-          }
-        }
-
-        /* Loop to search wrong characters */
-
-        for (let i = 0; i < word_size; i++) {
-          if (!solution.includes(_tries[activeRow][i].value)) {
-            _tries[activeRow][i].status = "incorrect"
-            setWrongChar((prev) =>
-              !prev.includes(_tries[activeRow][i].value)
-                ? [...prev, _tries[activeRow][i].value]
-                : [...prev]
-            )
-          }
-        }
-
-        setTries(_tries)
-
-        setActiveRow(activeRow + 1)
-        setActiveColumn(0)
-
-        if (word === solution) {
-          setWin(true)
-        } else if (activeRow >= n_rows - 1) {
-          setGameOver(true)
-        }
-      }
-    } else {
-      addLetter(value)
     }
   }
 
@@ -238,7 +241,9 @@ export const MainPage = () => {
 
       <div className={styles.keyboard_wrapper}>
         <Keyboard
+          handleCheckWordButton={handleCheckWordButton}
           handleKeyboardButton={handleKeyboardButton}
+          handleBackspace={handleBackspace}
           correctChar={correctChar}
           wrongChar={wrongChar}
           possibleChar={possibleChar}

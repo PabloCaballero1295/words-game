@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(80, 80, 80);
+  margin: 0.2em;
+  border-radius: 0.25em;
+  width: 3em;
+  height: 3em;
+  cursor: pointer;
+}
+
+.wrong_button {
+  background-color: red !important;
+}
+
+.correct_button {
+  background-color: green;
+}
+
+.possible_button {
+  background-color: orange;
+}
+
+.button_value {
+  font-size: 1.25em;
+  text-transform: uppercase;
+}
