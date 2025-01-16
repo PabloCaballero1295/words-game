@@ -12,6 +12,8 @@ import { useState } from "react"
 import { GameMessage } from "../GameMessage/GameMessage"
 import { WordError } from "../WordError/WordError"
 
+import { MdOutlineReplay } from "react-icons/md"
+
 type CellState = {
   value: string
   status: string
@@ -234,7 +236,8 @@ export const MainPage = () => {
       {(win || gameOver) && (
         <div className={styles.game_options}>
           <button className={styles.new_game_button} onClick={newGame}>
-            Nuevo juego
+            <span className={styles.new_game_button_text}>Nuevo juego</span>
+            <MdOutlineReplay size={25} />
           </button>
         </div>
       )}
