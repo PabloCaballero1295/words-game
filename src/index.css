@@ -3,6 +3,8 @@
   font-weight: 400;
   margin: 0;
 
+  flex: 1;
+
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -13,8 +15,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  flex: 1;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  height: 100%;
   width: 100%;
   padding: 0;
   position: fixed;
