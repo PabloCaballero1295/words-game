@@ -6,11 +6,19 @@ interface CellProps {
   status: string
   active: boolean
   position: number
+  wordCorrect: boolean
 }
 
-export const Cell = ({ letter, status, active, position }: CellProps) => {
+export const Cell = ({
+  letter,
+  status,
+  active,
+  position,
+  wordCorrect,
+}: CellProps) => {
   const [value, setValue] = useState(letter)
   const [flipped, setFlipped] = useState(false)
+  const [wordJump, setWordJump] = useState(false)
 
   useEffect(() => {
     setValue(letter)
@@ -21,10 +29,16 @@ export const Cell = ({ letter, status, active, position }: CellProps) => {
       setTimeout(() => {
         setFlipped(true)
       }, position * 50)
+      if (wordCorrect) {
+        setTimeout(() => {
+          setWordJump(true)
+        }, 750 + position * 200)
+        setWordJump(false)
+      }
     } else {
       setFlipped(false)
     }
-  }, [status, position])
+  }, [status, position, wordCorrect])
 
   const getColor = () => {
     let cell_style = ""
@@ -40,7 +54,7 @@ export const Cell = ({ letter, status, active, position }: CellProps) => {
   }
 
   return (
-    <div className={styles.cell_container}>
+    <div className={`${styles.cell_container} ${wordJump ? styles.jump : ""}`}>
       <div
         className={`${styles.cell} ${
           flipped ? styles.flipped : active ? styles.active : ""

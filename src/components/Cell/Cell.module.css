@@ -74,3 +74,23 @@
 .included {
   background-color: orange !important;
 }
+
+@keyframes jump {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-1em) rotate(0);
+  }
+  90% {
+    transform: translateY(0.25em) rotate(0);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+.jump {
+  animation: jump 0.25s ease-in-out 2;
+}

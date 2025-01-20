@@ -219,7 +219,7 @@ export const MainPage = () => {
         setWin(true)
         setTimeout(() => {
           setOpenModal(true)
-        }, 750)
+        }, 2000)
       } else if (activeRow >= n_rows - 1) {
         setGameOver(true)
         setTimeout(() => {
@@ -277,6 +277,7 @@ export const MainPage = () => {
             {item.map((letter, j) => (
               <Cell
                 key={j}
+                wordCorrect={win && activeRow == i ? true : false}
                 active={j == activeColumn && activeRow == i ? true : false}
                 letter={letter.value}
                 status={letter.status}
@@ -286,7 +287,6 @@ export const MainPage = () => {
           </div>
         ))}
       </div>
-
       <div className={styles.keyboard_wrapper}>
         <Keyboard
           handleCheckWordButton={handleCheckWordButton}
