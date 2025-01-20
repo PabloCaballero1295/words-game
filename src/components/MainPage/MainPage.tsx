@@ -30,13 +30,21 @@ const createGrid = (n_rows: number, word_size: number) => {
 }
 
 export const MainPage = () => {
+  // State of the word solution
   const [solution, setSolution] = useState(getFiveLetterWord())
+  // States Arrays to store characters that are wrong, are correct or are included in the word
   const [wrongChar, setWrongChar] = useState<string[]>([])
   const [correctChar, setCorrectChar] = useState<string[]>([])
   const [possibleChar, setPossibleChar] = useState<string[]>([])
+  //States to control game state
   const [gameOver, setGameOver] = useState(false)
   const [win, setWin] = useState(false)
+  // State to control the word length
+  const [shortWord, setShortWord] = useState(true)
+  // Used to store if the word is correct
   const [error, setError] = useState(false)
+  //Variable to check if the shake animation should start playing
+  const [shaking, setShaking] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const handleCloseModal = () => {
     setOpenModal(false)
@@ -51,6 +59,7 @@ export const MainPage = () => {
   const [activeRow, setActiveRow] = useState(0)
   const [activeColumn, setActiveColumn] = useState(0)
 
+  // Function to set to default values the game
   const newGame = () => {
     setSolution(getFiveLetterWord())
     setTries(createGrid(n_rows, word_size))
@@ -61,6 +70,8 @@ export const MainPage = () => {
     setPossibleChar([])
     setWin(false)
     setGameOver(false)
+    setShortWord(true)
+    setShaking(false)
   }
 
   //Function to set the modal text when the game is finished
@@ -132,9 +143,14 @@ export const MainPage = () => {
       word = word + val.value
     })
     if (word.length == word_size && !error) {
+      setShortWord(false)
       //If word dont exist on the list, display an error message
       if (!checkWordExists(word)) {
         setError(true)
+        setShaking(true)
+        setTimeout(() => {
+          setShaking(false)
+        }, 500)
         setTimeout(() => {
           setError(false)
         }, 2000)
@@ -213,6 +229,16 @@ export const MainPage = () => {
         setActiveRow(activeRow + 1)
         setActiveColumn(0)
       }
+    } else if (word.length < word_size) {
+      setShortWord(true)
+      setError(true)
+      setShaking(true)
+      setTimeout(() => {
+        setShaking(false)
+      }, 500)
+      setTimeout(() => {
+        setError(false)
+      }, 2000)
     }
   }
 
@@ -242,7 +268,12 @@ export const MainPage = () => {
       <div className={styles.title}>Adivina la palabra</div>
       <div className={styles.words_grid}>
         {tries.map((item, i) => (
-          <div key={i} className={styles.words_row}>
+          <div
+            key={i}
+            className={`${styles.words_row} ${
+              activeRow == i && shaking ? styles.shake : ""
+            }`}
+          >
             {item.map((letter, j) => (
               <Cell
                 key={j}
@@ -269,7 +300,11 @@ export const MainPage = () => {
 
       <NotificationBox
         visible={error}
-        text={"Esta palabra no está en la lista de posibles palabras"}
+        text={`${
+          shortWord
+            ? "La palabra debe tener 5 caracteres"
+            : "Esta palabra no está en la lista de posibles palabras"
+        }`}
       />
 
       {openModal && (
