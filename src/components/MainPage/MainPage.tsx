@@ -9,10 +9,9 @@ import {
 import styles from "./MainPage.module.css"
 import { Keyboard } from "../Keyboard/Keyboard"
 import { useState } from "react"
-import { GameMessage } from "../GameMessage/GameMessage"
-import { WordError } from "../WordError/WordError"
 
-import { MdOutlineReplay } from "react-icons/md"
+import { NotificationBox } from "../NotificationBox/NotificationBox"
+import { Modal } from "../Modal/Modal"
 
 type CellState = {
   value: string
@@ -38,6 +37,10 @@ export const MainPage = () => {
   const [gameOver, setGameOver] = useState(false)
   const [win, setWin] = useState(false)
   const [error, setError] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
+  const handleCloseModal = () => {
+    setOpenModal(false)
+  }
 
   const n_rows = 6
   const word_size = 5
@@ -58,6 +61,16 @@ export const MainPage = () => {
     setPossibleChar([])
     setWin(false)
     setGameOver(false)
+  }
+
+  const gameFinishMessage = () => {
+    if (win) {
+      return `Has resuelto la palabra oculta "${solution.toLocaleUpperCase()}" con ${
+        activeRow + 1
+      } intento${activeRow > 1 ? "s" : ""}`
+    } else {
+      return `No has podido resolver la palabra oculta "${solution.toLocaleUpperCase()}"`
+    }
   }
 
   // Function to update the chracter counter
@@ -117,10 +130,13 @@ export const MainPage = () => {
     _tries[activeRow].map((val) => {
       word = word + val.value
     })
-    if (word.length >= word_size) {
+    if (word.length >= word_size && !error) {
       //If word dont exist on the list, display an error message
       if (!checkWordExists(word)) {
         setError(true)
+        setTimeout(() => {
+          setError(false)
+        }, 2000)
         return
       }
 
@@ -181,13 +197,20 @@ export const MainPage = () => {
       }
 
       setTries(_tries)
-      setActiveRow(activeRow + 1)
-      setActiveColumn(0)
 
       if (word === solution) {
         setWin(true)
+        setTimeout(() => {
+          setOpenModal(true)
+        }, 750)
       } else if (activeRow >= n_rows - 1) {
         setGameOver(true)
+        setTimeout(() => {
+          setOpenModal(true)
+        }, 750)
+      } else {
+        setActiveRow(activeRow + 1)
+        setActiveColumn(0)
       }
     }
   }
@@ -231,16 +254,6 @@ export const MainPage = () => {
           </div>
         ))}
       </div>
-      {error && <WordError />}
-      {(win || gameOver) && <GameMessage victory={win} solution={solution} />}
-      {(win || gameOver) && (
-        <div className={styles.game_options}>
-          <button className={styles.new_game_button} onClick={newGame}>
-            <span className={styles.new_game_button_text}>Nuevo juego</span>
-            <MdOutlineReplay size={25} />
-          </button>
-        </div>
-      )}
 
       <div className={styles.keyboard_wrapper}>
         <Keyboard
@@ -252,6 +265,22 @@ export const MainPage = () => {
           possibleChar={possibleChar}
         />
       </div>
+
+      <NotificationBox
+        visible={error}
+        text={"La palabra no está en la lista"}
+      />
+
+      {openModal && (
+        <Modal
+          acceptButtonAction={newGame}
+          closeModal={handleCloseModal}
+          header={win ? "VICTORIA" : "DERROTA"}
+          content={gameFinishMessage()}
+          acceptButtonText="Jugar de nuevo"
+          modalBackgroundColor={win ? "green" : "red"}
+        />
+      )}
     </div>
   )
 }

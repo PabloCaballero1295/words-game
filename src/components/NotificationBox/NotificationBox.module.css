@@ -1,0 +1,21 @@
+.notification {
+  z-index: 100;
+  position: fixed;
+  top: 1em;
+  right: 50%;
+  transform: translate(50%, 0);
+  width: 90%;
+  max-width: 30em;
+  height: fit-content;
+  border-radius: 0.5em;
+
+  background-color: red;
+  color: white;
+  box-shadow: 10px 10px 10px black;
+}
+
+.content {
+  text-align: center;
+  padding: 1em;
+  margin: auto;
+}
