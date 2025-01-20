@@ -63,11 +63,12 @@ export const MainPage = () => {
     setGameOver(false)
   }
 
+  //Function to set the modal text when the game is finished
   const gameFinishMessage = () => {
     if (win) {
       return `Has resuelto la palabra oculta "${solution.toLocaleUpperCase()}" con ${
         activeRow + 1
-      } intento${activeRow > 1 ? "s" : ""}`
+      } intento${activeRow > 0 ? "s" : ""}`
     } else {
       return `No has podido resolver la palabra oculta "${solution.toLocaleUpperCase()}"`
     }
@@ -130,7 +131,7 @@ export const MainPage = () => {
     _tries[activeRow].map((val) => {
       word = word + val.value
     })
-    if (word.length >= word_size && !error) {
+    if (word.length == word_size && !error) {
       //If word dont exist on the list, display an error message
       if (!checkWordExists(word)) {
         setError(true)
@@ -268,7 +269,7 @@ export const MainPage = () => {
 
       <NotificationBox
         visible={error}
-        text={"La palabra no está en la lista"}
+        text={"Esta palabra no está en la lista de posibles palabras"}
       />
 
       {openModal && (
