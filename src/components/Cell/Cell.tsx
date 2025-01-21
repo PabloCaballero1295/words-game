@@ -6,15 +6,19 @@ interface CellProps {
   status: string
   active: boolean
   position: number
+  clickable: boolean
   wordCorrect: boolean
+  handleCellPress: (index: number) => void
 }
 
 export const Cell = ({
   letter,
   status,
   active,
+  clickable,
   position,
   wordCorrect,
+  handleCellPress,
 }: CellProps) => {
   const [value, setValue] = useState(letter)
   const [flipped, setFlipped] = useState(false)
@@ -54,13 +58,14 @@ export const Cell = ({
   }
 
   return (
-    <div className={`${styles.cell_container} ${wordJump ? styles.jump : ""}`}>
-      <div
-        className={`${styles.cell} ${
-          flipped ? styles.flipped : active ? styles.active : ""
-        }`}
-      >
-        <div className={styles.cell_front}>
+    <div
+      className={`${styles.cell_container} ${
+        clickable ? styles.clickable : ""
+      } ${wordJump ? styles.jump : ""}`}
+      onClick={() => (clickable ? handleCellPress(position) : null)}
+    >
+      <div className={`${styles.cell} ${flipped ? styles.flipped : ""}`}>
+        <div className={`${styles.cell_front} ${active ? styles.active : ""}`}>
           <div className={styles.cell_value}>{value}</div>
         </div>
         <div className={`${styles.cell_back} ${getColor()}`}>

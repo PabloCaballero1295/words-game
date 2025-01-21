@@ -131,18 +131,20 @@ export const MainPage = () => {
 
   // Removes the last character of the word
   const removeLetter = () => {
-    setGrid((prevMatrix) => {
-      const updatedMatrix = [...prevMatrix]
-      const updatedRow = [...updatedMatrix[activeRow]]
-      updatedRow[activeColumn - 1].value = ""
-      updatedMatrix[activeRow] = updatedRow
-      return updatedMatrix
-    })
-    setActiveColumn(activeColumn - 1)
+    const updatedMatrix = [...grid]
+    const updatedRow = [...updatedMatrix[activeRow]]
 
-    if (activeColumn <= 0) {
-      setActiveColumn(0)
+    if (activeColumn < 5 && updatedRow[activeColumn].value != "") {
+      updatedRow[activeColumn].value = ""
+    } else if (activeColumn > 0) {
+      updatedRow[activeColumn - 1].value = ""
+    } else {
+      return
     }
+    updatedMatrix[activeRow] = updatedRow
+
+    setGrid(updatedMatrix)
+    setActiveColumn((prevColumn) => Math.max(0, prevColumn - 1))
   }
 
   // Function to handle backspace button
@@ -150,10 +152,8 @@ export const MainPage = () => {
     if (gameOver || win) {
       return
     }
-    if (activeColumn != 0) {
-      removeLetter()
-      setError(false)
-    }
+    removeLetter()
+    setError(false)
   }
 
   // Function to Check the word
@@ -320,6 +320,10 @@ export const MainPage = () => {
     }
   }
 
+  const handleCellPress = (index: number) => {
+    setActiveColumn(index)
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.title}>Adivina la palabra</div>
@@ -333,9 +337,11 @@ export const MainPage = () => {
           >
             {item.map((letter, j) => (
               <Cell
+                handleCellPress={handleCellPress}
                 key={j}
                 wordCorrect={win && activeRow == i ? true : false}
                 active={j == activeColumn && activeRow == i ? true : false}
+                clickable={activeRow == i ? true : false}
                 letter={letter.value}
                 status={letter.status}
                 position={j}

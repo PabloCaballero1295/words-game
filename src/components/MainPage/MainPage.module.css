@@ -51,7 +51,7 @@
 
 .keyboard_wrapper {
   margin-top: auto;
-  margin-bottom: 2em;
+  margin-bottom: auto;
 }
 
 @keyframes shake {

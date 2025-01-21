@@ -11,6 +11,12 @@
   margin: 0.15em;
   border-radius: 0.5em;
   aspect-ratio: 1 / 1;
+
+  user-select: none;
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 .cell {
@@ -48,18 +54,27 @@
 }
 
 .cell_front {
-  background-color: rgb(80, 80, 80);
+  background-color: rgb(60, 60, 60);
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .cell_back {
   transform: rotateY(180deg);
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .active {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  border-radius: 0.5em;
+  /*border-radius: 0.5em;*/
+  border-radius: 10%;
   border: 2px solid lightblue;
 }
 
