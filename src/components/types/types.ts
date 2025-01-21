@@ -11,5 +11,7 @@ export type GameStatsHistory = {
   games: number
   wins: number
   loses: number
+  streak: number
+  bestStreak: number
   triesStats: GameTriesCounter
 }

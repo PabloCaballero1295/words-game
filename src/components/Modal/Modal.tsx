@@ -52,6 +52,14 @@ export const Modal = ({
               <div className={styles.number}>{stats.wins}</div>
               <div className={styles.text}>Victorias</div>
             </div>
+            <div className={styles.stat_header_item}>
+              <div className={styles.number}>{stats.streak}</div>
+              <div className={styles.text}>Racha actual</div>
+            </div>
+            <div className={styles.stat_header_item}>
+              <div className={styles.number}>{stats.bestStreak}</div>
+              <div className={styles.text}>Mejor Racha</div>
+            </div>
           </div>
 
           <div className={styles.tries_title}>Aciertos por nº de intentos</div>

@@ -24,8 +24,21 @@ export const MainPage = () => {
     games: 0,
     wins: 0,
     loses: 0,
+    streak: 0,
+    bestStreak: 0,
     triesStats: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, x: 0 },
   })
+
+  const resetStats = () => {
+    setStats({
+      games: 0,
+      wins: 0,
+      loses: 0,
+      streak: 0,
+      bestStreak: 0,
+      triesStats: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, x: 0 },
+    })
+  }
 
   // State of the word solution
   const [solution, setSolution] = useLocalStorageState(
@@ -247,6 +260,12 @@ export const MainPage = () => {
             ...prev,
             games: prev.games + 1,
             wins: prev.wins + 1,
+            loses: prev.loses,
+            streak: prev.streak + 1,
+            bestStreak:
+              prev.streak + 1 > prev.bestStreak
+                ? prev.streak + 1
+                : prev.bestStreak,
             triesStats: {
               ...prev.triesStats,
               [(activeRow + 1).toString()]:
@@ -260,7 +279,10 @@ export const MainPage = () => {
           return {
             ...prev,
             games: prev.games + 1,
-            wins: prev.wins + 1,
+            wins: prev.wins,
+            loses: prev.loses + 1,
+            streak: 0,
+            bestStreak: prev.bestStreak,
             triesStats: {
               ...prev.triesStats,
               ["x"]: prev.triesStats["x"] + 1,

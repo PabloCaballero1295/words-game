@@ -67,15 +67,15 @@ button {
 
 .stat_header_item {
   text-align: center;
-  margin: 0 2em;
+  margin: 0 0.5em;
 }
 
 .stat_header_item .number {
-  font-size: 1.2em;
+  font-size: 1.4em;
 }
 
 .stat_header_item .text {
-  font-size: 1.1em;
+  font-size: 1em;
 }
 
 .tries_title {
