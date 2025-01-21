@@ -14,11 +14,19 @@ import { useEffect, useState } from "react"
 import { NotificationBox } from "../NotificationBox/NotificationBox"
 import { Modal } from "../Modal/Modal"
 import useLocalStorageState from "../../hooks/hooks"
+import { GameStatsHistory } from "../types/types"
 
 const n_rows = 6
 const word_size = 5
 
 export const MainPage = () => {
+  const [stats, setStats] = useLocalStorageState<GameStatsHistory>("stats", {
+    games: 0,
+    wins: 0,
+    loses: 0,
+    triesStats: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, x: 0 },
+  })
+
   // State of the word solution
   const [solution, setSolution] = useLocalStorageState(
     "solution",
@@ -51,7 +59,7 @@ export const MainPage = () => {
     setOpenModal(false)
   }
 
-  const [tries, setTries] = useLocalStorageState(
+  const [grid, setGrid] = useLocalStorageState(
     "grid",
     createGrid(n_rows, word_size)
   )
@@ -76,7 +84,7 @@ export const MainPage = () => {
   // Function to set to default values the game
   const newGame = () => {
     setSolution(getFiveLetterWord())
-    setTries(createGrid(n_rows, word_size))
+    setGrid(createGrid(n_rows, word_size))
     setActiveColumn(0)
     setActiveRow(0)
     setWrongChar([])
@@ -121,7 +129,7 @@ export const MainPage = () => {
 
   // Removes the last character of the word
   const removeLetter = () => {
-    setTries((prevMatrix) => {
+    setGrid((prevMatrix) => {
       const updatedMatrix = [...prevMatrix]
       const updatedRow = [...updatedMatrix[activeRow]]
       updatedRow[activeColumn - 1].value = ""
@@ -154,9 +162,9 @@ export const MainPage = () => {
 
     let word = ""
 
-    const _tries = [...tries]
+    const _grid = [...grid]
 
-    _tries[activeRow].map((val) => {
+    _grid[activeRow].map((val) => {
       word = word + val.value
     })
     if (word.length == word_size && !error) {
@@ -180,39 +188,39 @@ export const MainPage = () => {
       /* Loop to check correct characters*/
 
       for (let i = 0; i < word_size; i++) {
-        if (_tries[activeRow][i].value == solution[i]) {
-          _tries[activeRow][i].status = "correct"
+        if (_grid[activeRow][i].value == solution[i]) {
+          _grid[activeRow][i].status = "correct"
           setCorrectChar((prev) =>
-            !prev.includes(_tries[activeRow][i].value)
-              ? [...prev, _tries[activeRow][i].value]
+            !prev.includes(_grid[activeRow][i].value)
+              ? [...prev, _grid[activeRow][i].value]
               : [...prev]
           )
           wordCounter = updateCharacterCounter(
             wordCounter,
-            _tries[activeRow][i].value
+            _grid[activeRow][i].value
           )
         }
       }
 
       /* Loop to search included characters that are not in the correct position */
       for (let i = 0; i < word_size; i++) {
-        if (solution.includes(_tries[activeRow][i].value)) {
+        if (solution.includes(_grid[activeRow][i].value)) {
           //Check the number of times the letter is in the word
 
           if (
-            _tries[activeRow][i].status != "correct" &&
-            getCharCount(wordCounter, _tries[activeRow][i].value) > 0
+            _grid[activeRow][i].status != "correct" &&
+            getCharCount(wordCounter, _grid[activeRow][i].value) > 0
           ) {
-            _tries[activeRow][i].status = "included"
+            _grid[activeRow][i].status = "included"
 
             setPossibleChar((prev) =>
-              !prev.includes(_tries[activeRow][i].value)
-                ? [...prev, _tries[activeRow][i].value]
+              !prev.includes(_grid[activeRow][i].value)
+                ? [...prev, _grid[activeRow][i].value]
                 : [...prev]
             )
-            updateCharacterCounter(wordCounter, _tries[activeRow][i].value)
-          } else if (_tries[activeRow][i].value != solution[i]) {
-            _tries[activeRow][i].status = "incorrect"
+            updateCharacterCounter(wordCounter, _grid[activeRow][i].value)
+          } else if (_grid[activeRow][i].value != solution[i]) {
+            _grid[activeRow][i].status = "incorrect"
           }
         }
       }
@@ -220,22 +228,45 @@ export const MainPage = () => {
       /* Loop to search wrong characters */
 
       for (let i = 0; i < word_size; i++) {
-        if (!solution.includes(_tries[activeRow][i].value)) {
-          _tries[activeRow][i].status = "incorrect"
+        if (!solution.includes(_grid[activeRow][i].value)) {
+          _grid[activeRow][i].status = "incorrect"
           setWrongChar((prev) =>
-            !prev.includes(_tries[activeRow][i].value)
-              ? [...prev, _tries[activeRow][i].value]
+            !prev.includes(_grid[activeRow][i].value)
+              ? [...prev, _grid[activeRow][i].value]
               : [...prev]
           )
         }
       }
 
-      setTries(_tries)
+      setGrid(_grid)
 
       if (word === solution) {
         setWin(true)
+        setStats((prev) => {
+          return {
+            ...prev,
+            games: prev.games + 1,
+            wins: prev.wins + 1,
+            triesStats: {
+              ...prev.triesStats,
+              [(activeRow + 1).toString()]:
+                prev.triesStats[(activeRow + 1).toString()] + 1,
+            },
+          }
+        })
       } else if (activeRow >= n_rows - 1) {
         setGameOver(true)
+        setStats((prev) => {
+          return {
+            ...prev,
+            games: prev.games + 1,
+            wins: prev.wins + 1,
+            triesStats: {
+              ...prev.triesStats,
+              ["x"]: prev.triesStats["x"] + 1,
+            },
+          }
+        })
       } else {
         setActiveRow(activeRow + 1)
         setActiveColumn(0)
@@ -266,7 +297,7 @@ export const MainPage = () => {
     if (activeColumn >= word_size) {
       return
     }
-    setTries((prevMatrix) => {
+    setGrid((prevMatrix) => {
       const updatedMatrix = [...prevMatrix]
       const updatedRow = [...updatedMatrix[activeRow]]
       updatedRow[activeColumn].value = value
@@ -282,7 +313,7 @@ export const MainPage = () => {
     <div className={styles.wrapper}>
       <div className={styles.title}>Adivina la palabra</div>
       <div className={styles.words_grid}>
-        {tries.map((item, i) => (
+        {grid.map((item, i) => (
           <div
             key={i}
             className={`${styles.words_row} ${
@@ -324,6 +355,7 @@ export const MainPage = () => {
 
       {openModal && (
         <Modal
+          stats={stats}
           acceptButtonAction={newGame}
           closeModal={handleCloseModal}
           header={win ? "VICTORIA" : "DERROTA"}
