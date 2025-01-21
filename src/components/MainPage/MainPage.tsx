@@ -29,17 +29,6 @@ export const MainPage = () => {
     triesStats: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, x: 0 },
   })
 
-  const resetStats = () => {
-    setStats({
-      games: 0,
-      wins: 0,
-      loses: 0,
-      streak: 0,
-      bestStreak: 0,
-      triesStats: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, x: 0 },
-    })
-  }
-
   // State of the word solution
   const [solution, setSolution] = useLocalStorageState(
     "solution",
