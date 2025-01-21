@@ -4,41 +4,42 @@ import {
   checkWordExists,
   countCharacter,
   CharCount,
+  createGrid,
 } from "../../utils/words"
 
 import styles from "./MainPage.module.css"
 import { Keyboard } from "../Keyboard/Keyboard"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { NotificationBox } from "../NotificationBox/NotificationBox"
 import { Modal } from "../Modal/Modal"
+import useLocalStorageState from "../../hooks/hooks"
 
-type CellState = {
-  value: string
-  status: string
-}
-
-const createGrid = (n_rows: number, word_size: number) => {
-  const grid: CellState[][] = []
-  for (let i = 0; i < n_rows; i++) {
-    grid[i] = []
-    for (let j = 0; j < word_size; j++) {
-      grid[i].push({ value: "", status: "" })
-    }
-  }
-  return grid
-}
+const n_rows = 6
+const word_size = 5
 
 export const MainPage = () => {
   // State of the word solution
-  const [solution, setSolution] = useState(getFiveLetterWord())
+  const [solution, setSolution] = useLocalStorageState(
+    "solution",
+    getFiveLetterWord()
+  )
   // States Arrays to store characters that are wrong, are correct or are included in the word
-  const [wrongChar, setWrongChar] = useState<string[]>([])
-  const [correctChar, setCorrectChar] = useState<string[]>([])
-  const [possibleChar, setPossibleChar] = useState<string[]>([])
+  const [wrongChar, setWrongChar] = useLocalStorageState<string[]>(
+    "wrongChar",
+    []
+  )
+  const [correctChar, setCorrectChar] = useLocalStorageState<string[]>(
+    "correctChar",
+    []
+  )
+  const [possibleChar, setPossibleChar] = useLocalStorageState<string[]>(
+    "possibleChar",
+    []
+  )
   //States to control game state
-  const [gameOver, setGameOver] = useState(false)
-  const [win, setWin] = useState(false)
+  const [gameOver, setGameOver] = useLocalStorageState("gameOver", false)
+  const [win, setWin] = useLocalStorageState("win", false)
   // State to control the word length
   const [shortWord, setShortWord] = useState(true)
   // Used to store if the word is correct
@@ -50,14 +51,27 @@ export const MainPage = () => {
     setOpenModal(false)
   }
 
-  const n_rows = 6
-  const word_size = 5
-
-  const [tries, setTries] = useState<CellState[][]>(
+  const [tries, setTries] = useLocalStorageState(
+    "grid",
     createGrid(n_rows, word_size)
   )
-  const [activeRow, setActiveRow] = useState(0)
-  const [activeColumn, setActiveColumn] = useState(0)
+  const [activeRow, setActiveRow] = useLocalStorageState("activeRow", 0)
+  const [activeColumn, setActiveColumn] = useLocalStorageState(
+    "activeColumn",
+    0
+  )
+
+  useEffect(() => {
+    if (win) {
+      setTimeout(() => {
+        setOpenModal(true)
+      }, 2000)
+    } else if (gameOver) {
+      setTimeout(() => {
+        setOpenModal(true)
+      }, 750)
+    }
+  }, [win, gameOver])
 
   // Function to set to default values the game
   const newGame = () => {
@@ -123,6 +137,9 @@ export const MainPage = () => {
 
   // Function to handle backspace button
   const handleBackspace = () => {
+    if (gameOver || win) {
+      return
+    }
     if (activeColumn != 0) {
       removeLetter()
       setError(false)
@@ -217,14 +234,8 @@ export const MainPage = () => {
 
       if (word === solution) {
         setWin(true)
-        setTimeout(() => {
-          setOpenModal(true)
-        }, 2000)
       } else if (activeRow >= n_rows - 1) {
         setGameOver(true)
-        setTimeout(() => {
-          setOpenModal(true)
-        }, 750)
       } else {
         setActiveRow(activeRow + 1)
         setActiveColumn(0)
@@ -244,6 +255,10 @@ export const MainPage = () => {
 
   // Function to handle letters pressed on keyboard
   const handleKeyboardButton = (value: string) => {
+    if (gameOver || win) {
+      return
+    }
+
     if (activeRow >= n_rows || win) {
       return
     }
